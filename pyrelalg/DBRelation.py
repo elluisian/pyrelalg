@@ -1,5 +1,5 @@
-from DBSchema import *
-from Tuple import *
+from .DBSchema import *
+from .Tuple import *
 
 
 class NonExistentTupleException(CustomException):

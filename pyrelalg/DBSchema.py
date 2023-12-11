@@ -1,4 +1,4 @@
-from Attribute import *
+from .Attribute import *
 
 
 class DBSchemaIterator(object):

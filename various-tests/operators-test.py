@@ -1,4 +1,4 @@
-from Operators import *
+from pyrelalg.Operators import *
 
 
 instA = DBInstance(DBSchema(("Matr", "Nome", "Età", "Stipendio",), (INTEGER, STRING, INTEGER, INTEGER,)))

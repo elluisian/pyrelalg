@@ -1,4 +1,4 @@
-from DBRelation import *
+from .DBRelation import *
 
 
 class AttributesNotFoundException(CustomException):
@@ -11,7 +11,7 @@ class MissingAttributesException(CustomException):
         CustomException.__init__(self, message)
 
 
-        
+
 
 """
 Relational Algebra standard operations

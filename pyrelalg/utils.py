@@ -18,8 +18,7 @@ class UndefinedOperationException(Exception):
     def __init__(self, message):
         CustomException.__init__(self, message)
 
-        
+
 class NotAValidParameterException(CustomException):
     def __init__(self, message):
         CustomException.__init__(self, message)
-

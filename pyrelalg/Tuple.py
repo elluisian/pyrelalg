@@ -1,5 +1,5 @@
-from utils import *
-from DBSchema import *
+from .utils import *
+from .DBSchema import *
 
 
 
