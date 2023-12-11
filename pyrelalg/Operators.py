@@ -1,18 +1,6 @@
 from .DBRelation import *
 
 
-class AttributesNotFoundException(CustomException):
-    def __init__(self, message):
-        CustomException.__init__(self, message)
-
-
-class MissingAttributesException(CustomException):
-    def __init__(self, message):
-        CustomException.__init__(self, message)
-
-
-
-
 """
 Relational Algebra standard operations
 """
@@ -127,7 +115,7 @@ def intersect(rel1, rel2):
             n.insert(t.asPythonTupleValues())
 
     return n
-                        
+
 
 
 def difference(rel1, rel2):

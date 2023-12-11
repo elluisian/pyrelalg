@@ -2,10 +2,6 @@ from .DBSchema import *
 from .Tuple import *
 
 
-class NonExistentTupleException(CustomException):
-    def __init__(self, message):
-        CustomException.__init__(self, message)
-
 
 
 class DBRelationIterator(object):
@@ -27,9 +23,7 @@ class DBRelationIterator(object):
 
 
 
-    
 
-    
 
 
 class DBRelation(object):
@@ -122,14 +116,14 @@ class DBRelation(object):
     def __copy__(self):
         return self.__deepcopy__(None)
 
-    
+
     """
     String rendition of relation instance
     """
     def __str__(self):
         attrs = self.getDBSchema().getAttributeNames()
         nAttrs = len(attrs)
-        
+
         maxCellTextWidths = []
 
         #
@@ -139,7 +133,7 @@ class DBRelation(object):
 
         for colName in headerRow:
             maxCellTextWidths.append(len(colName))
-        
+
         rows = []
         currRow = []
 
@@ -167,7 +161,7 @@ class DBRelation(object):
 
         # Return the final result
         return DBRelation.__getFinalStringTable(headerRow, rows)
-        
+
 
     def __repr__(self):
         return self.__str__()
@@ -181,7 +175,7 @@ class DBRelation(object):
                 vStr = "NULL"
             else:
                 vStr = str(v)
-    
+
             vLen = len(vStr)
             row.append(vStr)
 
@@ -191,7 +185,7 @@ class DBRelation(object):
     @staticmethod
     def __justifyString(string, totalSpace):
         return string.ljust(totalSpace)
-    
+
 
     @staticmethod
     def __getFinalStringTable(headerRow, rows):

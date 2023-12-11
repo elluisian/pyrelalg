@@ -41,7 +41,7 @@ class DBSchema(object):
 
         elif isinstance(attrNames, str):
             attrNames = (attrNames,)
-        
+
         attrL = []
         for i in attrNames:
             attrL.append(deepcopy(self.__attrData[i]))
@@ -55,7 +55,7 @@ class DBSchema(object):
 
         elif isinstance(attrNames, str):
             attrNames = (attrNames,)
-        
+
         attrInsts = self.getAttributes(attrNames)
         attrL = []
         for i in attrInsts:
@@ -90,7 +90,7 @@ class DBSchema(object):
         return self.__deepcopy__(None)
 
     def __iter__(self):
-        return DBSchemaIterator(self)            
+        return DBSchemaIterator(self)
 
     def __eq__(self, othSch):
         return (self is othSch) or self.attributeEquality(othSch.__attrNames)

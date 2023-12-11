@@ -1,11 +1,7 @@
 from .utils import *
 from .DBSchema import *
+from .Value import *
 
-
-
-class TupleCreationException(CustomException):
-    def __init__(self, message):
-        CustomException.__init__(self, message)
 
 
 
