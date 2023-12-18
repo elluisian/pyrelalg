@@ -1,36 +1,60 @@
 from pyrelalg.Operators import *
 
 
-instA = DBInstance(DBSchema(("Matr", "Nome", "Età", "Stipendio",), (INTEGER, STRING, INTEGER, INTEGER,)))
-instA.insert((101,   "Mario Rossi", 34, 40,))
-instA.insert((103, "Mario Bianchi", 23, 35,))
-instA.insert((104,    "Luigi Neri", 38, 61,))
-instA.insert((105,     "Nico Bini", 44, 38,))
-instA.insert((210,   "Marco Celli", 49, 60,))
-instA.insert((231,     "Siro Bisi", 50, 60,))
-instA.insert((252,     "Nico Bini", 44, 70,))
-instA.insert((301,  "Sergio Rossi", 34, 70,))
-instA.insert((375,   "Mario Rossi", 50, 65,))
+employeesSchema = DBSchema(
+    { "Matr": INTEGER, "Nome": STRING, "Età": INTEGER, "Stipendio": INTEGER },
+    ("Matr", "Nome", "Età", "Stipendio",)
+)
+
+"""
+employeesSchema = DBSchema(
+    (("Matr", INTEGER), ("Nome", STRING), ("Età", INTEGER), ("Stipendio", INTEGER),)
+)
+"""
+
+
+chiefEmployeesSchema = DBSchema(
+    { "Capo": INTEGER, "Impiegato": INTEGER },
+    ("Capo", "Impiegato",)
+)
+
+"""
+chiefEmployeesSchema = DBSchema(
+    (("Capo", INTEGER), ("Impiegato", INTEGER),)
+)
+"""
+
+
+employeesInst = DBInstance(employeesSchema)
+employeesInst.insert((101,   "Mario Rossi", 34, 40,))
+employeesInst.insert((103, "Mario Bianchi", 23, 35,))
+employeesInst.insert((104,    "Luigi Neri", 38, 61,))
+employeesInst.insert((105,     "Nico Bini", 44, 38,))
+employeesInst.insert((210,   "Marco Celli", 49, 60,))
+employeesInst.insert((231,     "Siro Bisi", 50, 60,))
+employeesInst.insert((252,     "Nico Bini", 44, 70,))
+employeesInst.insert((301,  "Sergio Rossi", 34, 70,))
+employeesInst.insert((375,   "Mario Rossi", 50, 65,))
 
 print("Relazione A")
-print(instA)
-impiegati = instA
+print(employeesInst)
+impiegati = employeesInst
 
 
-instB = DBInstance(DBSchema(("Capo", "Impiegato",), (INTEGER, INTEGER,)))
-instB.insert((210, 101,))
-instB.insert((210, 103,))
-instB.insert((210, 104,))
-instB.insert((231, 105,))
-instB.insert((301, 210,))
-instB.insert((301, 231,))
-instB.insert((375, 252,))
+chiefEmployeesInst = DBInstance(chiefEmployeesSchema)
+chiefEmployeesInst.insert((210, 101,))
+chiefEmployeesInst.insert((210, 103,))
+chiefEmployeesInst.insert((210, 104,))
+chiefEmployeesInst.insert((231, 105,))
+chiefEmployeesInst.insert((301, 210,))
+chiefEmployeesInst.insert((301, 231,))
+chiefEmployeesInst.insert((375, 252,))
 
-supervisione = instB
+supervisione = chiefEmployeesInst
 
 
 print("Relazione B")
-print(instB)
+print(chiefEmployeesInst)
 
 
 

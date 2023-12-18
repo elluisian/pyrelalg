@@ -28,11 +28,16 @@ class DBRelationIterator(object):
 
 class DBRelation(object):
     def __init__(self, dbSchema):
-        self.__dbSchema = deepcopy(dbSchema)
+        self.__dbSchema = dbSchema
         self.__tuples = []
         self.__nTuples = 0
 
 
+    # dict attr inst -> rawValue
+    # tuple inst
+    # collectible of Values
+    # collectible of raw Value
+    # dict of string -> rawValue
     def insert(self, pythonTupleValues):
         if not isinstance(pythonTupleValues, tuple) and not isinstance(pythonTupleValues, list):
             raise NotAValidParameterException("Error: expected python tuple or list, but got %s!" % (type(pythonTupleValues),))
@@ -47,10 +52,7 @@ class DBRelation(object):
 
 
     def getTuple(self, key):
-        if key not in range(0, self.getSize()):
-            raise NonExistentTupleException("Error: only %d tuplas are present in this relation! idx %d requested!" % (self.getSize(), key,))
-
-        return self.__tuples[key]
+        return self[key]
 
 
     def getDBSchema(self):
@@ -58,21 +60,22 @@ class DBRelation(object):
 
 
     def getSize(self):
-        return self.__nTuples
+        return len(self)
 
     def __len__(self):
-        return self.getSize()
+        return self.__nTuples
 
     def __contains__(self, t):
-        return self.hasTuple(t)
-    
+        return t in self.__tuples
+
+
     def hasSameSchema(self, othRel):
         return self.__dbSchema == othRel.__dbSchema
 
 
     def hasTuple(self, t):
-        return t in self.__tuples
-    
+        return t in self
+
 
     def hasPythonTupleValues(self, ptv):
         attrNames = self.__dbSchema.getAttributeNames()
@@ -81,9 +84,12 @@ class DBRelation(object):
         t = Tuple(attrData, ptv)
         return self.hasTuple(t)
 
-    
+
     def __getitem__(self, key):
-        return self.getTuple(key)
+        if key not in range(0, self.getSize()):
+            raise NonExistentTupleException("Error: only %d tuplas are present in this relation! idx %d requested!" % (self.getSize(), key,))
+
+        return self.__tuples[key]
 
 
     def __eq__(self, othInst):

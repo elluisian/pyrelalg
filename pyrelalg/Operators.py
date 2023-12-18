@@ -32,7 +32,7 @@ def project(rel, attrNames):
     if sch.attributeEquality(attrNames):
         return deepcopy(rel)
 
-    sch = DBSchema(attrNames, sch.getAttributeRawTypes(attrNames))
+    sch = DBSchema(sch.getAttributeRawTypes(attrNames), attrNames)
     n = DBRelation(sch)
     for t in rel:
         vals = t.asPythonTupleValues(attrNames)
@@ -77,7 +77,7 @@ def rename(rel, newAttrs, oldAttrs):
             except ValueError as ex:
                pass
 
-    r = DBRelation(DBSchema(newSchAttrs, attrRawTypes))
+    r = DBRelation(DBSchema(attrRawTypes, newSchAttrs))
     for t in rel:
         r.insert(t.asPythonTupleValues())
 
@@ -160,7 +160,7 @@ def __generic_join(rel1, rel2, leftOuter=False, rightOuter=False):
     attrNames.extend(attrNamesRemainder)
     attrRawTypes.extend(attrRawTypesRemainder)
 
-    sch = DBSchema(attrNames, attrRawTypes)
+    sch = DBSchema(attrRawTypes, attrNames)
     r = DBRelation(sch)
 
     for t1 in rel1:

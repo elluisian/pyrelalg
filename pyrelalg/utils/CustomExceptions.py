@@ -41,3 +41,8 @@ class MissingAttributesException(CustomException):
 class NonExistentTupleException(CustomException):
     def __init__(self, message):
         CustomException.__init__(self, message)
+
+
+class WIPException(CustomException):
+    def __init__(self, message):
+        CustomException.__init__(self, message)

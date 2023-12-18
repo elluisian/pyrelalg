@@ -9,5 +9,5 @@ FLOAT = float
 
 
 from .CustomExceptions import *
-
-
+from .functions import *
+from .ExtendedCollectible import *
