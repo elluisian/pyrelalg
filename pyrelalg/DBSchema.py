@@ -1,24 +1,5 @@
 from .Attribute import *
-
-
-class DBSchemaIterator(object):
-    def __init__(self, dbSchema):
-        self.__dbSchema = dbSchema
-        self.__attrs = dbSchema.getAttributeNames()
-        self.__idx = 0
-        self.__max = len(self.__attrs)
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.__idx == self.__max:
-            raise StopIteration
-
-        attrName = self.__attrs[self.__idx]
-        el = self.__dbSchema.getAttribute(attrName)
-        self.__idx += 1
-        return el
+from .DBElementIterator import *
 
 
 
@@ -177,14 +158,6 @@ class DBSchema(object):
     def getCommonAttributeNamesToSchema(self, othSch):
         return self.getCommonAttributeNames(othSch.getAttributeNames())
 
-    """
-    def hasAttributeNames(self, attrNames):
-        szAttrsRequested = len(attrNames)
-        attrsFound = self.getCommonAttributeNames(attrNames)
-        szAttrsFound = len(attrsFound)
-        return szAttrsFound == szAttrsRequested
-    """
-
     def attributeEquality(self, attrNames):
         return AttributeUtils.attrEquality(self.getAttributeNames(), attrNames)
 
@@ -197,7 +170,7 @@ class DBSchema(object):
         return self.__deepcopy__(None)
 
     def __iter__(self):
-        return DBSchemaIterator(self)
+        return DBElementIterator(self)
 
     def __eq__(self, othSch):
         return (self is othSch) or self.attributeEquality(othSch.__attrNamesOrder)
@@ -207,3 +180,73 @@ class DBSchema(object):
 
     def __repr__(self):
         return self.__str__()
+
+    def getAttrsNum(self):
+        return len(self)
+
+    def __len__(self):
+        return self.__nAttrs
+
+    def __contains__(self, t):
+        if not is_attribute(t) and not is_string(t):
+            raise WIPException("#4")
+
+        if is_attribute(t):
+            t = t.getName()
+
+        return t in self.__attrNamesOrder
+
+
+
+
+    """
+    Get item facilities
+    """
+    def __getitem__(self, sel):
+        return genericGetItem(self, sel, DBSchema.__noneFunct, DBSchema.__intFunct, DBSchema.__stringFunct, DBSchema.__solveSlice)
+
+
+
+
+    def __noneFunct(self, sel, isSingle, isStart):
+        return 0 if isStart else self.__nAttrs
+
+
+    def __intFunct(self, sel, isSingle, isStart=None):
+        if isSingle:
+            if sel < 0 or sel > self.__nAttrs:
+                raise IndexError("Error: Attribute n. %d does not exist!" % (sel,))
+            sel = self.__attrNamesOrder[sel]
+            return self.__attrData[sel]
+
+        else:
+            if (isStart and sel < 0) or (not isStart and sel > self.__nAttrs):
+                raise IndexError("Error: Attribute n. %d does not exist!" % (sel,))
+
+        return sel
+
+
+    def __stringFunct(self, sel, isSingle, isStart=None):
+        if sel not in self.__attrNamesOrder:
+            raise IndexError("Error: Attribute \"%s\" does not exist!" % (sel,))
+
+        if isSingle:
+            return self.__attrData[sel]
+
+        return self.__attrNamesOrder.index(sel)
+
+
+    def __solveSlice(self, start, end):
+        needReverse = start > end
+        mn = end if needReverse else start
+        mx = start if needReverse else end
+
+        ls = []
+        for i in range(mn, mx):
+            attrName = self.__attrNamesOrder[i]
+            ls.append(self.__attrData[attrName])
+
+        if needReverse:
+            ls = list(reversed(ls))
+
+        return ls

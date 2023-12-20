@@ -88,12 +88,12 @@ def deepcopy_dict(x):
 *********************************
 """
 
-justify_single = lambda x, y : ("-%%%ds" % (y,)) % (x,)
+justify_single = lambda x, y : ("%%-%ds" % (y,)) % (x,)
 
 def justify_multiple(row, cellTextWidths):
     nEls = len(cellTextWidths)
     for i in range(0, nEls):
-        row[i] = justifySingle(row[i], cellTextWidths[i])
+        row[i] = justify_single(row[i], cellTextWidths[i])
 
 
 

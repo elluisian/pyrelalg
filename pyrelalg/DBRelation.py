@@ -1,29 +1,7 @@
 from .DBSchema import *
 from .Tuple import *
-
-
-
-
-class DBRelationIterator(object):
-    def __init__(self, dbInst):
-        self.__dbInst = dbInst
-        self.__idx = 0
-        self.__max = self.__dbInst.getSize()
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.__idx == self.__max:
-            raise StopIteration
-
-        el = self.__dbInst[self.__idx]
-        self.__idx += 1
-        return el
-
-
-
-
+from .DBRelationPrettyPrinter import *
+from .DBElementIterator import *
 
 
 class DBRelation(object):
@@ -85,13 +63,6 @@ class DBRelation(object):
         return self.hasTuple(t)
 
 
-    def __getitem__(self, key):
-        if key not in range(0, self.getSize()):
-            raise NonExistentTupleException("Error: only %d tuplas are present in this relation! idx %d requested!" % (self.getSize(), key,))
-
-        return self.__tuples[key]
-
-
     def __eq__(self, othInst):
         if self is othInst:
             return True
@@ -111,7 +82,7 @@ class DBRelation(object):
         return isEqual
 
     def __iter__(self):
-        return DBRelationIterator(self)
+        return DBElementIterator(self)
 
     def __deepcopy__(self, memo):
         r = DBRelation(self.getDBSchema())
@@ -119,92 +90,53 @@ class DBRelation(object):
             r.insert(t.asPythonTupleValues())
         return r
 
+
     def __copy__(self):
         return self.__deepcopy__(None)
 
 
-    """
-    String rendition of relation instance
-    """
     def __str__(self):
-        attrs = self.getDBSchema().getAttributeNames()
-        nAttrs = len(attrs)
-
-        maxCellTextWidths = []
-
-        #
-        # Convert to string both header and single rows
-        #
-        headerRow = DBRelation.__calculateStringRow(attrs)
-
-        for colName in headerRow:
-            maxCellTextWidths.append(len(colName))
-
-        rows = []
-        currRow = []
-
-        for t in self:
-            values = t.asPythonTupleValues()
-            currRow = DBRelation.__calculateStringRow(values)
-            rows.append(currRow)
-
-            for idx, cell in enumerate(currRow):
-                cellSize = len(cell)
-                currCellTextWidth = maxCellTextWidths[idx]
-                maxCellTextWidths[idx] = cellSize if cellSize > currCellTextWidth else currCellTextWidth
-
-
-        # Perform all the needed justifications...
-        for i in range(0, len(headerRow)):
-            currElem = headerRow[i]
-            headerRow[i] = DBRelation.__justifyString(currElem, maxCellTextWidths[i])
-
-        for i in range(0, len(rows)):
-            for j in range(0, len(rows[i])):
-                currElem = rows[i][j]
-                rows[i][j] = DBRelation.__justifyString(currElem, maxCellTextWidths[j])
-
-
-        # Return the final result
-        return DBRelation.__getFinalStringTable(headerRow, rows)
+        dbRelPP = DBRelationPrettyPrinter(self)
+        return dbRelPP.prettyPrint()
 
 
     def __repr__(self):
         return self.__str__()
 
 
-    @staticmethod
-    def __calculateStringRow(values):
-        row = []
-        for v in values:
-            if v is None:
-                vStr = "NULL"
-            else:
-                vStr = str(v)
-
-            vLen = len(vStr)
-            row.append(vStr)
-
-        return row
+    """
+    Get item facilities
+    """
+    def __getitem__(self, sel):
+        return genericGetItem(self, sel, DBRelation.__noneFunct, DBRelation.__intFunct, None, DBRelation.__solveSlice)
 
 
-    @staticmethod
-    def __justifyString(string, totalSpace):
-        return string.ljust(totalSpace)
+    def __noneFunct(self, sel, isSingle, isStart=None):
+        return 0 if isStart else self.__nTuples
 
 
-    @staticmethod
-    def __getFinalStringTable(headerRow, rows):
-        headerStr = "| " + " | ".join(headerRow) + " |"
-        lHeaderStr = len(headerStr) - 2
-        dashes = "+{minus:-<{lHeaderStr}}+".format(minus="-", lHeaderStr=lHeaderStr)
-        finalHeader = dashes + "\n" + headerStr + "\n" + dashes
+    def __intFunct(self, sel, isSingle, isStart=None):
+        if isSingle:
+            if (isStart and sel < 0) or (not isStart and sel > self.__nTuples):
+                raise IndexError("Error: Tuple n. %d does not exist!" % (sel,))
+        else:
+            if sel < 0 or sel > self.__nTuples:
+                raise IndexError("Error: Tuple n. %d does not exist!" % (sel,))
 
-        finalRows = ""
-        for i in rows:
-            finalRows += "| " + " | ".join(i) + " |\n"
+        return self.__tuples[sel]
 
-        return finalHeader + "\n" + finalRows + dashes
+
+    def __solveSlice(self, start, end):
+        needReverse = start > end
+        mn = end if needReverse else start
+        mx = start if needReverse else end
+
+        ls = self.__tuples[mn:mx]
+        if needReverse:
+            ls = list(reversed(ls))
+
+        return ls
+
 
 
 
