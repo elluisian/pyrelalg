@@ -1,12 +1,11 @@
-# RelAlg scripts
+# pyrelalg
 
-This is a set of scripts that I used during my Database design exam at university.
-I had some troubles with relational algebra operations, so I decided to make some helpful scripts.
+During my study of Database design, I had some troubles with relational algebra.\
+I tried some tools but they did not satisfy me, so I decided to write this very simple library (if it can be called that) in order to debug the relational algebra expressions I needed.
 
-These are provided as-is, without any warranty.
-I made some optimizations the best I could, but I can't guarantee its correctness.
+This "library" is provided as-is, without any warranty, the code might need some more polish, I'll see if I can improve it in the future.
 
 
 ## How to use
 
-You can check the various-tests directory if needed, there are some of them, you can adapt to your own scenario and check the operation results.
+Please, check the "various-tests/exercise-example.py" file in order to see a sample program.

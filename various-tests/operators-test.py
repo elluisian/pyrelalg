@@ -1,94 +1,98 @@
 from pyrelalg.Operators import *
 
 
-instA = DBInstance(DBSchema(("Matr", "Nome", "Età", "Stipendio",), (INTEGER, STRING, INTEGER, INTEGER,)))
-instA.insert((101,   "Mario Rossi", 34, 40,))
-instA.insert((103, "Mario Bianchi", 23, 35,))
-instA.insert((104,    "Luigi Neri", 38, 61,))
-instA.insert((105,     "Nico Bini", 44, 38,))
-instA.insert((210,   "Marco Celli", 49, 60,))
-instA.insert((231,     "Siro Bisi", 50, 60,))
-instA.insert((252,     "Nico Bini", 44, 70,))
-instA.insert((301,  "Sergio Rossi", 34, 70,))
-instA.insert((375,   "Mario Rossi", 50, 65,))
+# Tables data
+employeesInst = DBInstance(DBSchema(("Serial", "Name", "Age", "Salary",), (INTEGER, STRING, INTEGER, INTEGER,)))
+employeesInst.insert((101,   "Mario Rossi", 34, 40,))
+employeesInst.insert((103, "Mario Bianchi", 23, 35,))
+employeesInst.insert((104,    "Luigi Neri", 38, 61,))
+employeesInst.insert((105,     "Nico Bini", 44, 38,))
+employeesInst.insert((210,   "Marco Celli", 49, 60,))
+employeesInst.insert((231,     "Siro Bisi", 50, 60,))
+employeesInst.insert((252,     "Nico Bini", 44, 70,))
+employeesInst.insert((301,  "Sergio Rossi", 34, 70,))
+employeesInst.insert((375,   "Mario Rossi", 50, 65,))
 
-print("Relazione A")
-print(instA)
+print("Employees table:")
+print(employeesInst)
 
 
-"""
-instB = DBInstance(DBSchema(("Matr", "Nome", "Età", "Stipendio",), (INTEGER, STRING, INTEGER, INTEGER,)))
-instB.insert((101,   "Mario Rossi", 34, 40,))
-
-print("Relazione B")
-print(instB)
-
-print("Difference")
-instDiff = difference(instA, instB)
-print(instDiff)
-
-exit(0)
-"""
+supervisionInst = DBInstance(DBSchema(("Chief", "Employee",), (INTEGER, INTEGER,)))
+supervisionInst.insert((210, 101,))
+supervisionInst.insert((210, 103,))
+supervisionInst.insert((210, 104,))
+supervisionInst.insert((231, 105,))
+supervisionInst.insert((301, 210,))
+supervisionInst.insert((301, 231,))
+supervisionInst.insert((375, 252,))
+supervisionInst.insert((375, 277,)) # TO BE REMOVED
 
 
 
-instB = DBInstance(DBSchema(("Capo", "Impiegato",), (INTEGER, INTEGER,)))
-instB.insert((210, 101,))
-instB.insert((210, 103,))
-instB.insert((210, 104,))
-instB.insert((231, 105,))
-instB.insert((301, 210,))
-instB.insert((301, 231,))
-instB.insert((375, 252,))
-instB.insert((375, 277,)) # DA RIMUOVERE
-
-print("Relazione B")
-print(instB)
 
 
-print("Rinomino di B (B')")
-instB1 = rename(instB, ("Matr",), ("Impiegato",))
-print(instB1)
-
-print("Natural join")
-njoin = natural_join(instA, instB1)
-print(njoin)
+# Showing tables
+print("\n\n\n\nSupervision table:")
+print(supervisionInst)
 
 
-print("Left semi-join")
-lsjoin = left_semijoin(instA, instB1)
-print(lsjoin)
 
-print("Right semi-join")
-rsjoin = right_semijoin(instA, instB1)
-print(rsjoin)
-
-
-print("Left anti-join")
-lajoin = left_antijoin(instA, instB1)
-print(lajoin)
+print("\n\n\n\nRename of Supervision:")
+v = rename(
+    supervisionInst,
+    ("EmployeeID",),
+    ("Employee",)
+)
+print(v)
 
 
-print("Right anti-join")
-rajoin = right_antijoin(instA, instB1)
-print(rajoin)
+print("\n\n\n\nProjection of Supervision:")
+v = project(
+    supervisionInst,
+    ("Employee",),
+)
+print(v)
 
 
-print("Left outer-join")
-lojoin = left_outerjoin(instA, instB1)
-print(lojoin)
+# Operations
+print("\n\n\n\nNatural join of Employees and Supervision")
+v = natural_join(employeesInst, supervisionInst)
+print(v)
 
 
-print("Right outer-join")
-rojoin = right_outerjoin(instA, instB1)
-print(rojoin)
+print("\n\n\n\nLeft semi-join of Employees and Supervision")
+v = left_semijoin(employeesInst, supervisionInst)
+print(v)
+
+print("\n\n\n\nRight semi-join of Employees and Supervision")
+v = right_semijoin(employeesInst, supervisionInst)
+print(v)
 
 
-print("Full outer-join")
-fojoin = full_outerjoin(instA, instB1)
-print(fojoin)
+print("\n\n\n\nLeft anti-join of Employees and Supervision")
+v = left_antijoin(employeesInst, supervisionInst)
+print(v)
 
 
-print("Self join of Relation A")
-print(self_join(instA))
+print("\n\n\n\nRight anti-join of Employees and Supervision")
+v = right_antijoin(employeesInst, supervisionInst)
+print(v)
 
+
+print("\n\n\n\nLeft outer-join of Employees and Supervision")
+v = left_outerjoin(employeesInst, supervisionInst)
+print(v)
+
+
+print("\n\n\n\nRight outer-join of Employees and Supervision")
+v = right_outerjoin(employeesInst, supervisionInst)
+print(v)
+
+
+print("\n\n\n\nFull outer-join of Employees and Supervision")
+v = full_outerjoin(employeesInst, supervisionInst)
+print(v)
+
+
+print("\n\n\n\nSelf join of Employees and Supervision")
+print(self_join(employeesInst))
