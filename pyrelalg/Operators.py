@@ -23,7 +23,7 @@ def project(rel, attrNames):
 
     if not AttributeUtils.attrSameNumber(attrNames, commonAttrNames):
         if szCommonAttrNames == 0:
-            raise MissingAttributesException("No attribute has been specified!")
+            raise MissingAttributesException("No valid attributes have been specified!")
         else:
             missingAttrs = AttributeUtils.attrDiff(attrNames, commonAttrNames)[0]
             raise AttributesNotFoundException("Attributes with names \"%s\" do not exist in this relation!" % (", ".join(missingAttrs),))
